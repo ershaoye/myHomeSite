@@ -1,8 +1,10 @@
-var express = require('express'),
+var config = require('./config'),
+    express = require('express'),
     morgan = require('morgan'), //日志中间件
     compress = require('compression'), //内容压缩
     bodyParser = require('body-parser'), //body 数据处理中间件
-    methodOverride = require('method-override'); // 提供HTTP协议DELETE PUT方法支持
+    methodOverride = require('method-override'), // 提供HTTP协议DELETE PUT方法支持
+    session = require('express-session'); //引入并定义session
 
 module.exports = function () {
     var app = express();
@@ -16,6 +18,12 @@ module.exports = function () {
     app.use(bodyParser.urlencoded({extended: true})); //表单数据支持
     app.use(bodyParser.json()); //JSON数据支持
     app.use(methodOverride()); //DELETE PUT 方法支持
+
+    app.use(session({
+        saveUninitialized: true,
+        resave: true,
+        secret: config.sessionSecret
+    })); //定义session设置
 
     app.set('views', './app/views'); //设置views目录
     app.set('view engine', 'ejs'); //设置view引擎为ejs
