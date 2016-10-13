@@ -1,10 +1,19 @@
-var config = require('./config'), //载入配置文件
-    express = require('express'), //载入express
-    morgan = require('morgan'), //日志中间件
-    compress = require('compression'), //内容压缩
-    bodyParser = require('body-parser'), //body 数据处理中间件
-    methodOverride = require('method-override'), // 提供HTTP协议DELETE PUT方法支持
-    session = require('express-session'); //引入并定义session
+//载入配置文件
+var config = require('./config'),
+    //载入express
+    express = require('express'),
+    //日志中间件
+    morgan = require('morgan'),
+    //内容压缩
+    compress = require('compression'),
+    //body 数据处理中间件
+    bodyParser = require('body-parser'),
+    //提供HTTP协议DELETE PUT方法支持
+    methodOverride = require('method-override'),
+    //引入并定义session
+    session = require('express-session'),
+    //引入passport
+    passport = require('passport');
 
 module.exports = function () {
     var app = express();
@@ -36,6 +45,11 @@ module.exports = function () {
     //设置view引擎为ejs
     app.set('view engine', 'ejs');
 
+    //启动passport中间件
+    app.use(passport.initialize());
+    //跟踪session中间件
+    app.use(passport.session());
+
     //载入index路由并实例化
     require('../app/routes/index.server.routes.js')(app);
     //载入users路由并实例化
@@ -43,6 +57,6 @@ module.exports = function () {
 
     //设置静态文件路径
     app.use(express.static('./public'));
-    
+
     return app;
 };
